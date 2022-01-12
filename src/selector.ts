@@ -1,6 +1,6 @@
 import { readdir } from "fs/promises";
 import { join } from "path";
-import { writeFile, rm } from "fs";
+import { rm } from "fs";
 
 const rootDir = "./input_";
 

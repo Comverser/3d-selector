@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/main.ts",
-    "dev": "ts-node-dev src/main.ts"
+    "selector": "ts-node src/selector.ts",
+    "filter": "ts-node src/filter.ts",
+    "dev": "ts-node-dev --respawn src/filter.ts"
   },
   "keywords": [],
   "author": "",
