@@ -25,9 +25,6 @@ const toArray = async (iter: any) => {
 const dirsAllFull = toArray(lsAll()).then((dirs) => dirs);
 
 dirsAllFull.then((subfolders) => {
-    if (subfolders) {
-        console.log("Ok");
-    }
     subfolders.forEach((subfolder) => {
         rm(subfolder, { recursive: true }, (err) => {
             if (err) throw err;
