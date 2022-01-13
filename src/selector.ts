@@ -61,6 +61,16 @@ const dirsAll = toArray(lsAll()).then((dirs) => {
     });
 });
 
+const dirsAllLabel = toArray(lsAll()).then((dirs) => {
+    return dirs.map((dir) => {
+        if (dir.includes("2_라벨링데이터/")) {
+            const pre = "2_라벨링데이터/";
+            const subStr = dir.substr(dir.indexOf(pre) + pre.length);
+            return subStr;
+        }
+    });
+});
+
 const dirsAllFull = toArray(lsAll()).then((dirs) => dirs);
 
 const rmdirTargets = dirsAll.then(async (all) => {
@@ -68,10 +78,24 @@ const rmdirTargets = dirsAll.then(async (all) => {
     return all.filter((dir) => dirs3dArr.indexOf(dir) == -1);
 });
 
+const rmdirTargetsLabel = dirsAllLabel.then(async (all) => {
+    const dirs3dArr = await dirs3d;
+    return all.filter((dir) => dirs3dArr.indexOf(dir) == -1);
+});
+
 dirsAllFull.then(async (dirsAll) => {
     const rmdirTargetArr = await rmdirTargets;
+    const rmdirTargetArrLabel = await rmdirTargetsLabel;
     dirsAll.forEach((path) => {
         rmdirTargetArr.forEach((dir) => {
+            if (path.includes(dir)) {
+                rm(path, { recursive: true }, (err) => {
+                    if (err) throw err;
+                });
+                console.log(`${path} is deleted`);
+            }
+        });
+        rmdirTargetArrLabel.forEach((dir) => {
             if (path.includes(dir)) {
                 rm(path, { recursive: true }, (err) => {
                     if (err) throw err;
