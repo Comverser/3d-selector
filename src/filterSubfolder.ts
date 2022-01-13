@@ -29,9 +29,9 @@ dirsAllFull.then((subfolders) => {
         console.log("Ok");
     }
     subfolders.forEach((subfolder) => {
-        // rm(subfolder, { recursive: true }, (err) => {
-        //     if (err) throw err;
-        // });
+        rm(subfolder, { recursive: true }, (err) => {
+            if (err) throw err;
+        });
         console.log(`${subfolder} is removed`);
     });
 });
