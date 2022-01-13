@@ -2,7 +2,7 @@ import { readdir } from "fs/promises";
 import { readdirSync, unlinkSync, existsSync } from "fs";
 import { join } from "path";
 
-const rootDir = "./input_";
+const rootDir = "./input";
 
 async function* lsAll(path = rootDir, currLv = 0, maxLv = 5): any {
     currLv++;

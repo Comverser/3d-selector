@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "selector": "ts-node src/selector.ts",
-    "filter": "ts-node src/filter.ts",
-    "dev": "ts-node-dev --respawn src/filter.ts"
+    "filterDiff": "ts-node src/filterDiff.ts",
+    "filterSubfolder": "ts-node src/filterSubfolder.ts",
+    "dev": "ts-node-dev --respawn src/filterSubfolder.ts"
   },
   "keywords": [],
   "author": "",

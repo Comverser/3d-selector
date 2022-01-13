@@ -2,7 +2,7 @@ import { readdir } from "fs/promises";
 import { join } from "path";
 import { rm } from "fs";
 
-const rootDir = "./input_";
+const rootDir = "./input";
 
 async function* lsLidar(
     path = rootDir,
