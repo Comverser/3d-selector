@@ -194,13 +194,13 @@ const restructureData = (dataSplitted: string[]) => {
 };
 
 const init = async () => {
+    const logDir = join(__dirname, "..", "log");
+    if (!existsSync(logDir)) mkdirSync(logDir);
     const allFiles = await lib.lsTargetLv(lsData);
     if (allFiles.length <= 0) {
         console.log("Dataset path is invalid");
         process.exit(1);
     } else {
-        const logDir = join(__dirname, "..", "log");
-        if (!existsSync(logDir)) mkdirSync(logDir);
         if (!dev) logger.info(allFiles);
     }
 };
