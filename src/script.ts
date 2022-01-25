@@ -232,7 +232,7 @@ const runRestructure = async () => {
 };
 
 const run = async () => {
-    init();
+    await init();
 
     await runSceneFilter();
     logger.info("[2D only scenes removed]");
