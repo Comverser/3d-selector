@@ -36,7 +36,7 @@ const logger = pino(
     pino.multistream(streams)
 );
 
-const dev = true;
+const dev = false;
 
 const rootDir = "../Dataset"; // rootDir level is 1
 const delimiter = "데이터_";
