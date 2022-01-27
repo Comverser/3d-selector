@@ -113,7 +113,7 @@ const makeFullDirs = (rootDir: string, no: number, cmDir: string) => {
     return fullDirsTmp;
 };
 
-const rmdirScenes = (commonDirsAll: string[]) => {
+const listUpScenes = (commonDirsAll: string[]) => {
     return commonDirsAll.map((cmDir) => {
         if (cmDir.includes("Training")) {
             return makeFullDirs(rootDir, 1, cmDir);
@@ -132,40 +132,57 @@ const rmdirScenes = (commonDirsAll: string[]) => {
     });
 };
 
-const rmDiffFiles = (rmdirScenesList: string[][]) => {
-    return rmdirScenesList.map((scene) => {
+const genDiffFiles = (scenesList: string[][]) => {
+    return scenesList.map((scene) => {
         const cams = readdirSync(scene[0]).map((f) =>
-            f.replace(/\.[^/.]+$/, "")
-        );
-        const lidars = readdirSync(scene[1]).map((f) =>
             f.replace(/\.[^/.]+$/, "")
         );
         const labels = readdirSync(scene[2]).map((f) =>
             f.replace(/\.[^/.]+$/, "")
         );
-        const diff = cams
-            .filter((name) => !lidars.includes(name))
-            .concat(lidars.filter((name) => !cams.includes(name)));
+
+        const diffLabels = labels
+            .filter((name) => !cams.includes(name))
+            .concat(cams.filter((name) => !labels.includes(name)));
 
         const diffPath: string[] = [];
 
-        diff.forEach((file) => {
+        diffLabels.forEach((file) => {
             const cam = join(scene[0], `${file}.jpg`);
             const lidar = join(scene[1], `${file}.pcd`);
             const label = join(scene[2], `${file}.json`);
             diffPath.push(cam, lidar, label);
         });
 
+        if (existsSync(scene[1])) {
+            const lidars = readdirSync(scene[1]).map((f) =>
+                f.replace(/\.[^/.]+$/, "")
+            );
+
+            const diffCams = cams
+                .filter((name) => !lidars.includes(name))
+                .concat(lidars.filter((name) => !cams.includes(name)));
+
+            diffCams.forEach((file) => {
+                const cam = join(scene[0], `${file}.jpg`);
+                if (diffPath.indexOf(cam) === -1) {
+                    const lidar = join(scene[1], `${file}.pcd`);
+                    const label = join(scene[2], `${file}.json`);
+                    diffPath.push(cam, lidar, label);
+                }
+            });
+        }
+
         return diffPath;
     });
 };
 
-const filterLidarPcds = (scenes: string[]) => {
+const filterDiffFiles = (scenes: string[]) => {
     const commonDirsAll = lib.trimDirNames(scenes, delimiter);
 
-    const rmdirScenesList = rmdirScenes(commonDirsAll);
+    const scenesList = listUpScenes(commonDirsAll);
 
-    const diffFiles = rmDiffFiles(rmdirScenesList);
+    const diffFiles = genDiffFiles(scenesList);
 
     diffFiles.forEach((scene) => {
         scene.forEach((path: any) => {
@@ -205,15 +222,13 @@ const init = async () => {
     }
 };
 
-const runSceneFilter = async () => {
-    const lidars = await lib.lsTargetLv(lsLidars);
-    const scenes = await lib.lsTargetLv(lsScenes);
-    filterLidarScenes(lidars, scenes);
+const runDataFilter = async (scenes: string[]) => {
+    filterDiffFiles(scenes);
 };
 
-const runDataFilter = async () => {
-    const scenes3dOnly = await lib.lsTargetLv(lsScenes);
-    filterLidarPcds(scenes3dOnly);
+const runSceneFilter = async (scenes: string[]) => {
+    const lidars = await lib.lsTargetLv(lsLidars);
+    filterLidarScenes(lidars, scenes);
 };
 
 const runRestructure = async () => {
@@ -234,17 +249,22 @@ const runRestructure = async () => {
 const run = async () => {
     await init();
 
-    await runSceneFilter();
-    logger.info("[2D only scenes removed]");
-    console.log("[2D only scenes removed]");
+    const filterOnly = false;
 
-    await runDataFilter();
-    logger.info("[2D only data removed]");
-    console.log("[2D only data removed]");
+    const scenes = await lib.lsTargetLv(lsScenes);
+    await runDataFilter(scenes);
+    logger.info("[Diff data removed]");
+    console.log("[Diff data removed]");
 
-    await runRestructure();
-    logger.info("[Dataset restructured]");
-    console.log("[Dataset restructured]");
+    if (!filterOnly) {
+        await runSceneFilter(scenes);
+        logger.info("[2D only scenes removed]");
+        console.log("[2D only scenes removed]");
+
+        await runRestructure();
+        logger.info("[Dataset restructured]");
+        console.log("[Dataset restructured]");
+    }
 };
 
 run();
