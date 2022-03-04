@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node build/script.js",
+    "restruct": "node build/restruct.js",
+    "selector": "node build/selector.js",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn src/script.ts"
+    "dev": "ts-node-dev --respawn src/restruct.ts"
   },
   "keywords": [],
   "author": "",
