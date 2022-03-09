@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "listup": "node build/listup.js",
     "restruct": "node build/restruct.js",
     "selector": "node build/selector.js",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn src/restruct.ts"
+    "dev": "ts-node-dev --respawn src/listup.ts"
   },
   "keywords": [],
   "author": "",
